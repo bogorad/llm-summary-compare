@@ -1,26 +1,33 @@
 # Summarization Model Comparison
 
-This project uses OpenCode to compare the summarization capabilities of different AI models on a provided text fragment.
+A portable bash tool to compare summarization capabilities of different AI models via the OpenRouter API.
 
 See [docs/adr/](docs/adr/) for architecture decisions.
 
 ## Files
 
-- `models.json`: List of OpenRouter model IDs to test (1-6 models)
-- `fragment.txt`: Input text to summarize
-- `select-models.sh`: Interactive model selector using OpenRouter API + fzf
-- `summarize_all.sh`: Bash script that orchestrates the comparison
-- `.opencode/agent/summarizer.md`: Single agent used with `--model` override
-- `.opencode/command/`: Custom command to run the comparison
-- `results.xml`: Output with anonymized summaries and winner analysis
+| File | Description |
+|------|-------------|
+| `models.json` | List of OpenRouter model IDs to test (1-6 models) |
+| `fragment.txt` | Input text to summarize |
+| `prompts/summarizer.md` | System prompt for summarization task |
+| `prompts/judge.md` | System prompt for evaluation task |
+| `select-models.sh` | Interactive model selector using OpenRouter API + fzf |
+| `summarize_all.sh` | Main script that orchestrates the comparison |
+| `flake.nix` | Nix devshell with all dependencies |
 
 ## Setup
 
-1. Install OpenCode: `curl -fsSL https://opencode.ai/install | bash`
-2. Configure OpenRouter API key via one of:
+### With Nix (recommended)
+```bash
+nix develop
+```
+
+### Manual
+1. Configure OpenRouter API key via one of:
    - Docker secret: `/run/secrets/api_keys/openrouter`
    - Environment variable: `OPENROUTER_API_KEY`
-3. Install dependencies: `jq`, `curl`, `fzf`
+2. Install dependencies: `jq`, `curl`, `fzf`, `bc`
 
 ## Usage
 
@@ -28,24 +35,28 @@ See [docs/adr/](docs/adr/) for architecture decisions.
 ```bash
 ./select-models.sh
 ```
-Fetches all available models from OpenRouter and lets you select up to 6 using fzf (TAB to select, ENTER to confirm).
+- Shows current models in `models.json`
+- Fetches all available models from OpenRouter
+- Select with fzf (TAB to select, ENTER to confirm, ESC to cancel)
+- New selections are merged with existing models (deduplicated)
 
 ### Run Comparison
 ```bash
-opencode
-/summarize-all
+./summarize_all.sh
 ```
-Or directly: `./summarize_all.sh`
 
 This will:
-- Generate summaries using each model in parallel
+- Generate summaries using each model in parallel (direct API calls)
 - Anonymize results with random IDs (A-F depending on model count)
-- Compare them using Gemini and determine the best summarizer
-- Save results to `results.xml`
+- Compare using Gemini judge and determine winner
+- Report per-model timing
 
 ## Output
 
-- Individual summaries: `{provider}_{model}_summary.md`
-- Combined results: `results.xml` with input, anonymized summaries, and winner
+| Path | Description |
+|------|-------------|
+| `work/*_summary.md` | Individual model summaries |
+| `work/results.xml` | XML results with CDATA-escaped content |
+| `RESULT.md` | Human-readable markdown report |
 
-The comparison uses Gemini to evaluate which model produced the best summary based on accuracy, completeness, objectivity, and format adherence.
+The comparison uses Gemini to evaluate summaries based on accuracy, completeness, objectivity, and format adherence.

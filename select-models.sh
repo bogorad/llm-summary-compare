@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MAX_MODELS=6
+MODELS_FILE="$SCRIPT_DIR/models.json"
 
 # Dependency checks
 for cmd in curl jq fzf; do
@@ -16,6 +17,13 @@ for cmd in curl jq fzf; do
         exit 1
     fi
 done
+
+# Show current models
+if [[ -f "$MODELS_FILE" ]]; then
+    echo "Current models:" >&2
+    jq -r '.[]' "$MODELS_FILE" | sed 's/^/  /' >&2
+    echo "" >&2
+fi
 
 # API key resolution
 if [[ -f /run/secrets/api_keys/openrouter ]]; then
@@ -40,23 +48,32 @@ fi
 
 # Extract model IDs and present in fzf
 SELECTED=$(echo "$MODELS_JSON" | jq -r '.data[].id' | sort | \
-    fzf --multi --prompt="Select up to $MAX_MODELS models (TAB to select, ENTER to confirm): " \
-        --header="Use TAB to select multiple models, ENTER when done")
+    fzf --multi --no-sort \
+        --prompt="Select models to ADD (TAB=select, ENTER=confirm, ESC=cancel): " \
+        --header="Selected models will be merged with existing ones") || true
 
-# Validate selection
+# Handle cancel/escape
 if [[ -z "$SELECTED" ]]; then
-    echo "No models selected." >&2
-    exit 1
+    echo "No models selected, keeping existing." >&2
+    exit 0
 fi
 
-COUNT=$(echo "$SELECTED" | wc -l)
+# Merge with existing and dedupe
+if [[ -f "$MODELS_FILE" ]]; then
+    EXISTING=$(jq -r '.[]' "$MODELS_FILE")
+    MERGED=$(printf '%s\n%s' "$EXISTING" "$SELECTED" | sort -u)
+else
+    MERGED="$SELECTED"
+fi
+
+COUNT=$(echo "$MERGED" | wc -l)
 if [[ $COUNT -gt $MAX_MODELS ]]; then
-    echo "Error: Selected $COUNT models, maximum is $MAX_MODELS" >&2
+    echo "Error: Total $COUNT models exceeds maximum of $MAX_MODELS" >&2
     exit 1
 fi
 
-# Write to models.json
-echo "$SELECTED" | jq -R -s 'split("\n") | map(select(length > 0))' > "$SCRIPT_DIR/models.json"
+# Write merged list
+echo "$MERGED" | jq -R -s 'split("\n") | map(select(length > 0))' > "$MODELS_FILE"
 
 echo "Saved $COUNT model(s) to models.json:" >&2
-cat "$SCRIPT_DIR/models.json"
+cat "$MODELS_FILE"

@@ -1,4 +1,14 @@
-# Output files
+flake.lock
+fragment.txt
+
+# Nix/direnv
+.direnv/
+
+# Work directory (summaries, results.xml)
+work/
+
+# Results in root (legacy)
+RESULT.md
 *_summary.md
 results.xml
 

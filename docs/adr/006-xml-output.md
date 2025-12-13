@@ -1,19 +1,27 @@
-# ADR 006: XML Output Format
+# ADR 006: Dual Output Format (XML + Markdown)
 
 ## Status
 Accepted
 
 ## Context
-Results need a structured format for storage and potential future analysis. The format should preserve text content including special characters and be both machine-readable and human-readable.
+Results need structured format for programmatic access and human-readable format for review. Work files should be separated from final results.
 
 ## Decision
-Use XML format for `results.xml` with:
-- CDATA sections to preserve text content verbatim
+Generate two output formats:
+
+**XML** (`work/results.xml`):
+- CDATA sections to preserve text content verbatim (with `]]>` escaping)
 - Structure: `<results>` containing `<input>`, `<summaries>`, `<winner>`, `<model_mapping>`
 - Model mapping separated from summaries to maintain anonymization integrity
 
+**Markdown** (`RESULT.md` in project root):
+- Human-readable report with winner, all summaries, judge evaluation, and timing table
+- Easy to view in any markdown renderer
+
+All intermediate files (`*_summary.md`, `results.xml`) stored in `work/` directory.
+
 ## Consequences
-- Easy to parse programmatically
-- Preserves formatting in summaries
-- Self-documenting hierarchical structure
-- Can be transformed to other formats (JSON, HTML) if needed
+- XML for programmatic parsing
+- Markdown for human review
+- Work directory keeps project root clean
+- `work/` is gitignored

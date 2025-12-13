@@ -4,11 +4,11 @@
 Accepted
 
 ## Context
-The judge model (Gemini 3 Pro) might have inherent biases toward certain providers or model families. To ensure objective evaluation, the judge must not know which summary came from which model.
+The judge model might have inherent biases toward certain providers or model families. To ensure objective evaluation, the judge must not know which summary came from which model.
 
 ## Decision
 - Shuffle model order randomly using `shuf`
-- Assign anonymous IDs (A, B, C) to shuffled models
+- Assign anonymous IDs (A-F) to shuffled models based on count
 - Present only anonymous IDs to judge during comparison
 - Reveal model mapping only in final results after winner is determined
 

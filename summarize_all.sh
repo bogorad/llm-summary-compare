@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -6,12 +6,33 @@ cd "$SCRIPT_DIR"
 
 MAX_MODELS=6
 ALL_IDS=("A" "B" "C" "D" "E" "F")
+WORK_DIR="$SCRIPT_DIR/work"
+TIMING_DIR=$(mktemp -d)
+trap 'rm -rf "$TIMING_DIR"' EXIT
 
-# Dependency check
-if ! command -v jq &>/dev/null; then
-    echo "Error: jq is required. Install with: apt install jq / brew install jq" >&2
+mkdir -p "$WORK_DIR"
+
+OPENROUTER_API="https://openrouter.ai/api/v1/chat/completions"
+
+# Dependency checks
+for cmd in jq bc curl; do
+    if ! command -v "$cmd" &>/dev/null; then
+        echo "Error: $cmd is required. Install with: apt install $cmd / brew install $cmd" >&2
+        exit 1
+    fi
+done
+
+# API key resolution
+if [[ -f /run/secrets/api_keys/openrouter ]]; then
+    OPENROUTER_API_KEY=$(cat /run/secrets/api_keys/openrouter)
+elif [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+    echo "Error: OpenRouter API key not found." >&2
+    echo "Set OPENROUTER_API_KEY or create /run/secrets/api_keys/openrouter" >&2
     exit 1
 fi
+
+# Read prompts
+SUMMARIZER_PROMPT=$(cat prompts/summarizer.md)
 
 # Read fragment
 FRAGMENT=$(cat fragment.txt)
@@ -37,12 +58,58 @@ sanitize_filename() {
     echo "$1" | tr '/' '_'
 }
 
-# Run summarizations in parallel
+# Helper: escape content for CDATA (split ]]> sequences)
+escape_cdata() {
+    sed 's/]]>/]]]]><![CDATA[>/g'
+}
+
+# Helper: call OpenRouter API
+# Usage: call_openrouter MODEL SYSTEM_PROMPT USER_CONTENT
+call_openrouter() {
+    local model="$1"
+    local system_prompt="$2"
+    local user_content="$3"
+    
+    local payload
+    payload=$(jq -n \
+        --arg model "$model" \
+        --arg sys "$system_prompt" \
+        --arg user "$user_content" \
+        '{
+            model: $model,
+            messages: [
+                {role: "system", content: $sys},
+                {role: "user", content: $user}
+            ]
+        }')
+    
+    local response
+    response=$(curl -s -X POST "$OPENROUTER_API" \
+        -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+        -H "Content-Type: application/json" \
+        -d "$payload")
+    
+    # Check for API error
+    if echo "$response" | jq -e '.error' &>/dev/null; then
+        echo "API Error: $(echo "$response" | jq -r '.error.message // .error')" >&2
+        return 1
+    fi
+    
+    echo "$response" | jq -r '.choices[0].message.content'
+}
+
+# Run summarizations in parallel with timing
+SCRIPT_START=$(date +%s)
 echo "Running $MODEL_COUNT model(s) in parallel..."
 PIDS=()
 for MODEL in "${MODELS[@]}"; do
     SAFE_NAME=$(sanitize_filename "$MODEL")
-    opencode run --agent summarizer --model "openrouter/$MODEL" "$FRAGMENT" > "${SAFE_NAME}_summary.md" &
+    (
+        START=$(date +%s.%N)
+        call_openrouter "$MODEL" "$SUMMARIZER_PROMPT" "$FRAGMENT" > "$WORK_DIR/${SAFE_NAME}_summary.md"
+        END=$(date +%s.%N)
+        echo "$END - $START" | bc > "$TIMING_DIR/${SAFE_NAME}.time"
+    ) &
     PIDS+=($!)
 done
 
@@ -66,17 +133,20 @@ for i in "${!RANDOM_MODELS[@]}"; do
     ID_TO_MODEL[$ID]=${RANDOM_MODELS[$i]}
 done
 
-# Create results.xml
-echo "<results>" > results.xml
-echo "<input><![CDATA[$FRAGMENT]]></input>" >> results.xml
-echo "<summaries>" >> results.xml
+# Create results.xml with proper CDATA escaping
+echo "<results>" > "$WORK_DIR/results.xml"
+echo -n "<input><![CDATA[" >> "$WORK_DIR/results.xml"
+echo "$FRAGMENT" | escape_cdata >> "$WORK_DIR/results.xml"
+echo "]]></input>" >> "$WORK_DIR/results.xml"
+echo "<summaries>" >> "$WORK_DIR/results.xml"
 for ID in "${IDS[@]}"; do
     MODEL=${ID_TO_MODEL[$ID]}
     SAFE_NAME=$(sanitize_filename "$MODEL")
-    SUMMARY=$(cat "${SAFE_NAME}_summary.md")
-    echo "<summary id=\"$ID\"><![CDATA[$SUMMARY]]></summary>" >> results.xml
+    echo -n "<summary id=\"$ID\"><![CDATA[" >> "$WORK_DIR/results.xml"
+    escape_cdata < "$WORK_DIR/${SAFE_NAME}_summary.md" >> "$WORK_DIR/results.xml"
+    echo "]]></summary>" >> "$WORK_DIR/results.xml"
 done
-echo "</summaries>" >> results.xml
+echo "</summaries>" >> "$WORK_DIR/results.xml"
 
 # Build comparison prompt with all summaries
 SUMMARIES=""
@@ -84,7 +154,7 @@ ID_LIST=""
 for ID in "${IDS[@]}"; do
     MODEL=${ID_TO_MODEL[$ID]}
     SAFE_NAME=$(sanitize_filename "$MODEL")
-    SUMMARY=$(cat "${SAFE_NAME}_summary.md")
+    SUMMARY=$(cat "$WORK_DIR/${SAFE_NAME}_summary.md")
     SUMMARIES="${SUMMARIES}Summary $ID:
 $SUMMARY
 
@@ -93,24 +163,18 @@ $SUMMARY
 done
 ID_LIST=${ID_LIST%, }  # Remove trailing comma
 
-# Use Gemini as judge (via OpenRouter)
-JUDGE_MODEL="openrouter/google/gemini-2.0-flash-001"
+# Read judge prompt and use Gemini as judge
+JUDGE_PROMPT=$(cat prompts/judge.md)
+JUDGE_MODEL="google/gemini-2.0-flash-001"
 
-COMPARISON_PROMPT="You are evaluating summarization quality. Compare these $MODEL_COUNT summaries of the same source text.
-
-Criteria:
-- Accuracy (factual correctness vs source)
-- Completeness (coverage of key points)
-- Objectivity (no editorializing)
-- Format adherence (HTML ul/li, bold tags)
-
-Source text:
+JUDGE_USER_CONTENT="Source text:
 $FRAGMENT
 
 $SUMMARIES
-State which summary ($ID_LIST) is best and explain why. End your response with exactly one line: WINNER: X (where X is one of $ID_LIST)"
+Choose the best summary from: $ID_LIST"
 
-WINNER_OUTPUT=$(opencode run --model "$JUDGE_MODEL" "$COMPARISON_PROMPT")
+echo "Running judge evaluation..."
+WINNER_OUTPUT=$(call_openrouter "$JUDGE_MODEL" "$JUDGE_PROMPT" "$JUDGE_USER_CONTENT")
 
 # Extract winner ID
 WINNER_ID=$(echo "$WINNER_OUTPUT" | grep -oE "WINNER: [A-${IDS[-1]}]" | tail -1 | cut -d' ' -f2)
@@ -123,13 +187,65 @@ else
 fi
 
 # Append winner and model mapping
-echo "<winner id=\"$WINNER_ID\" model=\"$WINNER_MODEL\"><![CDATA[$WINNER_OUTPUT]]></winner>" >> results.xml
-echo "<model_mapping>" >> results.xml
+echo -n "<winner id=\"$WINNER_ID\" model=\"$WINNER_MODEL\"><![CDATA[" >> "$WORK_DIR/results.xml"
+echo "$WINNER_OUTPUT" | escape_cdata >> "$WORK_DIR/results.xml"
+echo "]]></winner>" >> "$WORK_DIR/results.xml"
+echo "<model_mapping>" >> "$WORK_DIR/results.xml"
 for ID in "${IDS[@]}"; do
-    echo "  <map id=\"$ID\" model=\"${ID_TO_MODEL[$ID]}\"/>" >> results.xml
+    echo "  <map id=\"$ID\" model=\"${ID_TO_MODEL[$ID]}\"/>" >> "$WORK_DIR/results.xml"
 done
-echo "</model_mapping>" >> results.xml
-echo "</results>" >> results.xml
+echo "</model_mapping>" >> "$WORK_DIR/results.xml"
+echo "</results>" >> "$WORK_DIR/results.xml"
 
-echo "Results written to results.xml"
+SCRIPT_END=$(date +%s)
+TOTAL_TIME=$((SCRIPT_END - SCRIPT_START))
+
+# Generate RESULT.md
+{
+    echo "# Summarization Comparison Results"
+    echo ""
+    echo "## Winner: $WINNER_ID ($WINNER_MODEL)"
+    echo ""
+    echo "## Summaries"
+    echo ""
+    for ID in "${IDS[@]}"; do
+        MODEL=${ID_TO_MODEL[$ID]}
+        SAFE_NAME=$(sanitize_filename "$MODEL")
+        echo "### Summary $ID: \`$MODEL\`"
+        echo ""
+        cat "$WORK_DIR/${SAFE_NAME}_summary.md"
+        echo ""
+    done
+    echo "## Judge Evaluation"
+    echo ""
+    echo "$WINNER_OUTPUT"
+    echo ""
+    echo "## Timing"
+    echo ""
+    echo "| Model | Time |"
+    echo "|-------|------|"
+    for MODEL in "${MODELS[@]}"; do
+        SAFE_NAME=$(sanitize_filename "$MODEL")
+        if [[ -f "$TIMING_DIR/${SAFE_NAME}.time" ]]; then
+            TIME=$(cat "$TIMING_DIR/${SAFE_NAME}.time")
+            printf "| %s | %.1fs |\n" "$MODEL" "$TIME"
+        fi
+    done
+    printf "| **Total (wall clock)** | **%ds** |\n" "$TOTAL_TIME"
+} > RESULT.md
+
+# Console output
+echo ""
+echo "=== Timing Report ==="
+for MODEL in "${MODELS[@]}"; do
+    SAFE_NAME=$(sanitize_filename "$MODEL")
+    if [[ -f "$TIMING_DIR/${SAFE_NAME}.time" ]]; then
+        TIME=$(cat "$TIMING_DIR/${SAFE_NAME}.time")
+        printf "  %-40s %6.1fs\n" "$MODEL" "$TIME"
+    fi
+done
+echo "  ----------------------------------------"
+printf "  %-40s %6ds\n" "Total (wall clock)" "$TOTAL_TIME"
+echo ""
+echo "Results written to work/results.xml and RESULT.md"
 echo "Winner: $WINNER_ID ($WINNER_MODEL)"
