@@ -190,7 +190,7 @@ JUDGE_PAYLOAD=$(jq -n \
             allow_fallbacks: false
         },
         reasoning: {
-            effort: "high"
+            max_tokens: 16000
         }
     }')
 
