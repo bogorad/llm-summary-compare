@@ -174,7 +174,37 @@ $SUMMARIES
 Choose the best summary from: $ID_LIST"
 
 echo "Running judge evaluation..."
-WINNER_OUTPUT=$(call_openrouter "$JUDGE_MODEL" "$JUDGE_PROMPT" "$JUDGE_USER_CONTENT")
+# Judge call with provider routing and thinking enabled
+JUDGE_PAYLOAD=$(jq -n \
+    --arg model "$JUDGE_MODEL" \
+    --arg sys "$JUDGE_PROMPT" \
+    --arg user "$JUDGE_USER_CONTENT" \
+    '{
+        model: $model,
+        messages: [
+            {role: "system", content: $sys},
+            {role: "user", content: $user}
+        ],
+        provider: {
+            order: ["google-ai-studio"],
+            allow_fallbacks: false
+        },
+        reasoning: {
+            effort: "high"
+        }
+    }')
+
+JUDGE_RESPONSE=$(curl -s -X POST "$OPENROUTER_API" \
+    -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "$JUDGE_PAYLOAD")
+
+if echo "$JUDGE_RESPONSE" | jq -e '.error' &>/dev/null; then
+    echo "Judge API Error: $(echo "$JUDGE_RESPONSE" | jq -r '.error.message // .error')" >&2
+    exit 1
+fi
+
+WINNER_OUTPUT=$(echo "$JUDGE_RESPONSE" | jq -r '.choices[0].message.content')
 
 # Extract winner ID
 WINNER_ID=$(echo "$WINNER_OUTPUT" | grep -oE "WINNER: [A-${IDS[-1]}]" | tail -1 | cut -d' ' -f2)

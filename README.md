@@ -59,4 +59,4 @@ This will:
 | `work/results.xml` | XML results with CDATA-escaped content |
 | `RESULT.md` | Human-readable markdown report |
 
-The comparison uses Gemini 3 Pro (`google/gemini-3-pro-preview`) to evaluate summaries based on accuracy, completeness, objectivity, and format adherence.
+The comparison uses Gemini 3 Pro (`google/gemini-3-pro-preview`) via Google AI Studio with thinking/reasoning enabled to evaluate summaries based on accuracy, completeness, objectivity, and format adherence.
