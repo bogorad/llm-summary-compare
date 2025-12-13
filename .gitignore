@@ -1,0 +1,7 @@
+# Output files
+*_summary.md
+results.xml
+
+# Editor backup files
+*~
+*.swp
