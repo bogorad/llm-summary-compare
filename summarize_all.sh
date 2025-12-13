@@ -175,6 +175,7 @@ Choose the best summary from: $ID_LIST"
 
 echo "Running judge evaluation..."
 # Judge call with provider routing and thinking enabled
+# Note: google-ai-studio has aggressive rate limits; using google-vertex instead
 JUDGE_PAYLOAD=$(jq -n \
     --arg model "$JUDGE_MODEL" \
     --arg sys "$JUDGE_PROMPT" \
@@ -186,7 +187,7 @@ JUDGE_PAYLOAD=$(jq -n \
             {role: "user", content: $user}
         ],
         provider: {
-            order: ["google-ai-studio"],
+            order: ["google-vertex"],
             allow_fallbacks: false
         },
         reasoning: {
