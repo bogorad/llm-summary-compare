@@ -165,7 +165,7 @@ ID_LIST=${ID_LIST%, }  # Remove trailing comma
 
 # Read judge prompt and use Gemini as judge
 JUDGE_PROMPT=$(cat prompts/judge.md)
-JUDGE_MODEL="google/gemini-2.0-flash-001"
+JUDGE_MODEL="google/gemini-3-pro-preview"
 
 JUDGE_USER_CONTENT="Source text:
 $FRAGMENT

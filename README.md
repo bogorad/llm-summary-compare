@@ -48,7 +48,7 @@ nix develop
 This will:
 - Generate summaries using each model in parallel (direct API calls)
 - Anonymize results with random IDs (A-F depending on model count)
-- Compare using Gemini judge and determine winner
+- Compare using Gemini 3 Pro judge and determine winner
 - Report per-model timing
 
 ## Output
@@ -59,4 +59,4 @@ This will:
 | `work/results.xml` | XML results with CDATA-escaped content |
 | `RESULT.md` | Human-readable markdown report |
 
-The comparison uses Gemini to evaluate summaries based on accuracy, completeness, objectivity, and format adherence.
+The comparison uses Gemini 3 Pro (`google/gemini-3-pro-preview`) to evaluate summaries based on accuracy, completeness, objectivity, and format adherence.
