@@ -11,8 +11,10 @@ The judge model might have inherent biases toward certain providers or model fam
 - Assign anonymous IDs (A-F) to shuffled models based on count
 - Present only anonymous IDs to judge during comparison
 - Reveal model mapping only in final results after winner is determined
+- Use Gemini 3 Pro via Google AI Studio with reasoning enabled for thorough evaluation
 
 ## Consequences
 - Eliminates potential bias in evaluation
 - Results XML separates anonymous summaries from model mapping
 - Winner extraction uses structured `WINNER: X` format for reliability
+- Reasoning tokens provide transparent evaluation rationale
