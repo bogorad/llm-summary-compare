@@ -4,8 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-MAX_MODELS=6
-ALL_IDS=("A" "B" "C" "D" "E" "F")
+MAX_MODELS=8
+ALL_IDS=("A" "B" "C" "D" "E" "F" "G" "H")
 WORK_DIR="$SCRIPT_DIR/work"
 TIMING_DIR=$(mktemp -d)
 trap 'rm -rf "$TIMING_DIR"' EXIT

@@ -8,12 +8,12 @@ See [docs/adr/](docs/adr/) for architecture decisions.
 
 | File | Description |
 |------|-------------|
-| `models.json` | List of OpenRouter model IDs to test (1-6 models) |
+| `models.json` | List of OpenRouter model IDs to test (1-8 models) |
 | `fragment.txt` | Input text to summarize |
 | `prompts/summarizer.md` | System prompt for summarization task |
 | `prompts/judge.md` | System prompt for evaluation task |
 | `select-models.sh` | Interactive model selector using OpenRouter API + fzf |
-| `summarize_all.sh` | Main script that orchestrates the comparison |
+| `summarize-all.sh` | Main script that orchestrates the comparison |
 | `flake.nix` | Nix devshell with all dependencies |
 
 ## Setup
@@ -42,12 +42,12 @@ nix develop
 
 ### Run Comparison
 ```bash
-./summarize_all.sh
+./summarize-all.sh
 ```
 
 This will:
 - Generate summaries using each model in parallel (direct API calls)
-- Anonymize results with random IDs (A-F depending on model count)
+- Anonymize results with random IDs (A-H depending on model count)
 - Compare using Gemini 3 Pro judge and determine winner
 - Report per-model timing
 
@@ -59,4 +59,4 @@ This will:
 | `work/results.xml` | XML results with CDATA-escaped content |
 | `RESULT.md` | Human-readable markdown report |
 
-The comparison uses Gemini 3 Pro (`google/gemini-3-pro-preview`) via Google Vertex with thinking/reasoning enabled to evaluate summaries based on accuracy, completeness, objectivity, and format adherence.
+The comparison uses `Gemini 3 Pro` (`google/gemini-3-pro-preview`) via Google Vertex with thinking/reasoning enabled to evaluate summaries based on accuracy, completeness, objectivity, and format adherence.
