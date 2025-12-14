@@ -170,10 +170,10 @@ ID_LIST=${ID_LIST%, }  # Remove trailing comma
 # Read judge prompt and use Gemini as judge
 JUDGE_PROMPT=$(cat prompts/judge.md)
 
-# Replace the <pompt> section with the actual summarizer prompt
+# Replace the <prompt> section with the actual summarizer prompt
 JUDGE_PROMPT=$(awk -v sp="$SUMMARIZER_PROMPT" '
-/<pompt>/ { in_block=1; print "<pompt>"; print sp; next }
-/<\/pompt>/ { in_block=0; print "</pompt>"; next }
+/<prompt>/ { in_block=1; print "<prompt>"; print sp; next }
+/<\/prompt>/ { in_block=0; print "</prompt>"; next }
 !in_block { print }
 ' <<< "$JUDGE_PROMPT")
 JUDGE_MODEL="google/gemini-3-pro-preview"

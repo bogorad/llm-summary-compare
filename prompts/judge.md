@@ -13,7 +13,7 @@ You are evaluating summarization quality. Compare the provided summaries of the 
 
 All models were given the exact same prompt, here it is. Consider adherence to prompt as a major factor.
 
-<pompt>
+<prompt>
 # Summarizer
 
 You are an objective commenter. The input is a text fragment to summarize.
@@ -37,7 +37,7 @@ You are an objective commenter. The input is a text fragment to summarize.
 - Do not use phrases like "the article/author discusses/criticizes/says/thinks/argues"
 - Do not comment on authors' attitudes
 - Do not editorialize
-  </pompt>
+  </prompt>
 
 ## Instructions
 

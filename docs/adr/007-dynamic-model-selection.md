@@ -13,7 +13,7 @@ Create `select-models.sh` that:
 3. Fetches available models from OpenRouter's `/api/v1/models` endpoint
 4. Presents all models in `fzf` with `--no-sort` to maintain alphabetical order
 5. Merges selected models with existing ones (deduplicated)
-6. Validates total count does not exceed 6
+6. Validates total count does not exceed 8
 7. ESC/cancel exits without modifying `models.json`
 
 ## Consequences
@@ -22,4 +22,4 @@ Create `select-models.sh` that:
 - Additive selection model - easy to add models incrementally
 - Cancel-safe - no changes on ESC
 - Requires `fzf`, `jq`, and `curl` as dependencies
-- Maximum of 6 models enforced to keep comparisons manageable
+- Maximum of 8 models enforced to keep comparisons manageable

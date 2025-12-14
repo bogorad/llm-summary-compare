@@ -48,7 +48,7 @@ nix develop
 This will:
 - Generate summaries using each model in parallel (direct API calls)
 - Anonymize results with random IDs (A-H depending on model count)
-- Compare using Gemini 3 Pro judge and determine winner
+- Compare using `Gemini 3 Pro` judge and determine winner
 - Report per-model timing
 
 ## Output

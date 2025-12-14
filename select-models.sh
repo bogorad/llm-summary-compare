@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MAX_MODELS=6
+MAX_MODELS=8
 MODELS_FILE="$SCRIPT_DIR/models.json"
 
 # Dependency checks

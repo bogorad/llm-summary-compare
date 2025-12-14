@@ -8,7 +8,7 @@ The judge model might have inherent biases toward certain providers or model fam
 
 ## Decision
 - Shuffle model order randomly using `shuf`
-- Assign anonymous IDs (A-F) to shuffled models based on count
+- Assign anonymous IDs (A-H) to shuffled models based on count
 - Present only anonymous IDs to judge during comparison
 - Reveal model mapping only in final results after winner is determined
 - Use `Gemini 3 Pro` via Google Vertex with reasoning enabled for thorough evaluation
