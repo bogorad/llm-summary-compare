@@ -25,8 +25,8 @@ nix develop
 
 ### Manual
 1. Configure OpenRouter API key via one of:
-   - Docker secret: `/run/secrets/api_keys/openrouter`
-   - Environment variable: `OPENROUTER_API_KEY`
+    - SOPS-nix secret file: `/run/secrets/api_keys/openrouter`
+    - Environment variable: `OPENROUTER_API_KEY`
 2. Install dependencies: `jq`, `curl`, `fzf`, `bc`
 
 ## Usage

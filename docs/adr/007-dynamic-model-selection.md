@@ -9,7 +9,7 @@ Hardcoding model names requires manual updates when adding new models. OpenRoute
 ## Decision
 Create `select-models.sh` that:
 1. Shows current models from `models.json`
-2. Resolves API key from Docker secret (`/run/secrets/api_keys/openrouter`) or environment variable (`OPENROUTER_API_KEY`)
+2. Resolves API key from SOPS-nix secret file (`/run/secrets/api_keys/openrouter`) or environment variable (`OPENROUTER_API_KEY`)
 3. Fetches available models from OpenRouter's `/api/v1/models` endpoint
 4. Presents all models in `fzf` with `--no-sort` to maintain alphabetical order
 5. Merges selected models with existing ones (deduplicated)
