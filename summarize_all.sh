@@ -135,16 +135,20 @@ done
 
 # Create results.xml with proper CDATA escaping
 echo "<results>" > "$WORK_DIR/results.xml"
-echo -n "<input><![CDATA[" >> "$WORK_DIR/results.xml"
-echo "$FRAGMENT" | escape_cdata >> "$WORK_DIR/results.xml"
-echo "]]></input>" >> "$WORK_DIR/results.xml"
+{
+echo -n "<input><![CDATA["
+echo "$FRAGMENT" | escape_cdata
+echo "]]></input>"
+} >> "$WORK_DIR/results.xml"
 echo "<summaries>" >> "$WORK_DIR/results.xml"
 for ID in "${IDS[@]}"; do
     MODEL=${ID_TO_MODEL[$ID]}
     SAFE_NAME=$(sanitize_filename "$MODEL")
-    echo -n "<summary id=\"$ID\"><![CDATA[" >> "$WORK_DIR/results.xml"
-    escape_cdata < "$WORK_DIR/${SAFE_NAME}_summary.md" >> "$WORK_DIR/results.xml"
-    echo "]]></summary>" >> "$WORK_DIR/results.xml"
+    {
+    echo -n "<summary id=\"$ID\"><![CDATA["
+    escape_cdata < "$WORK_DIR/${SAFE_NAME}_summary.md"
+    echo "]]></summary>"
+    } >> "$WORK_DIR/results.xml"
 done
 echo "</summaries>" >> "$WORK_DIR/results.xml"
 
@@ -165,6 +169,13 @@ ID_LIST=${ID_LIST%, }  # Remove trailing comma
 
 # Read judge prompt and use Gemini as judge
 JUDGE_PROMPT=$(cat prompts/judge.md)
+
+# Replace the <pompt> section with the actual summarizer prompt
+JUDGE_PROMPT=$(awk -v sp="$SUMMARIZER_PROMPT" '
+/<pompt>/ { in_block=1; print "<pompt>"; print sp; next }
+/<\/pompt>/ { in_block=0; print "</pompt>"; next }
+!in_block { print }
+' <<< "$JUDGE_PROMPT")
 JUDGE_MODEL="google/gemini-3-pro-preview"
 
 JUDGE_USER_CONTENT="Source text:
@@ -218,9 +229,11 @@ else
 fi
 
 # Append winner and model mapping
-echo -n "<winner id=\"$WINNER_ID\" model=\"$WINNER_MODEL\"><![CDATA[" >> "$WORK_DIR/results.xml"
-echo "$WINNER_OUTPUT" | escape_cdata >> "$WORK_DIR/results.xml"
-echo "]]></winner>" >> "$WORK_DIR/results.xml"
+{
+echo -n "<winner id=\"$WINNER_ID\" model=\"$WINNER_MODEL\"><![CDATA["
+echo "$WINNER_OUTPUT" | escape_cdata
+echo "]]></winner>"
+} >> "$WORK_DIR/results.xml"
 echo "<model_mapping>" >> "$WORK_DIR/results.xml"
 for ID in "${IDS[@]}"; do
     echo "  <map id=\"$ID\" model=\"${ID_TO_MODEL[$ID]}\"/>" >> "$WORK_DIR/results.xml"
