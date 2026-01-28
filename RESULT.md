@@ -1,90 +1,83 @@
 # Summarization Comparison Results
 
-## Winner: D (anthropic/claude-haiku-4.5)
+## Winner: A (google/gemini-3-flash-preview)
 
 ## Summaries
 
-### Summary A: `openai/gpt-5.1-codex-mini`
+### Summary A: `google/gemini-3-flash-preview`
 
 <ul>
-<li><b>Merger scope</b>: Trump Media’s $6 billion merger with TAE Technologies marks the Trump family’s largest move into mainstream finance since President Trump’s return to the White House.</li>
-<li><b>Fusion ambition</b>: TAE, supported by major corporate backers and seasoned board members, touts a “battle-tested” team and reactor results while aiming for first power by 2031.</li>
-<li><b>Management changes</b>: Devin Nunes and Michl Binderbauer will serve as co-CEOs of the combined entity, with Michael Schwab becoming chairman and Donald Trump Jr. joining the nine-person board.</li>
-<li><b>Strategic pivot</b>: Trump Media, which has reported large operating losses, is shifting from social-media products and crypto plays toward nuclear fusion to align with broader Trump family ventures.</li>
-<li><b>Political scrutiny</b>: The deal draws lawmakers’ interest over potential conflicts of interest as federal fusion programs expand alongside private-sector funding surges.</li>
+    <li><b>Service Suspension:</b> Google issued a cease and desist order to Kantar and Barb, halting a measurement tool that compared YouTube channel performance with traditional TV and streaming data.</li>
+    <li><b>Contractual Dispute:</b> The legal intervention focused on alleged breaches of terms of service related to how third-party audio-matching technology accessed creator data via Google's API.</li>
+    <li><b>Audience Transparency:</b> Prior to the suspension, initial data indicated that top YouTube creators like MrBeast and Peppa Pig captured significantly smaller percentages of the total TV audience compared to traditional broadcast figures.</li>
+    <li><b>Methodological Conflict:</b> Google maintains that the independent measurement service provided by Barb and Kantar did not offer a representative view of the platform's actual viewership.</li>
+    <li><b>Regulatory Context:</b> This disruption occurs as UK regulators and industry bodies seek standardized cross-platform data to evaluate the impact of internet-based media on the broader television market.</li>
 </ul>
 
-### Summary B: `google/gemini-2.5-flash-lite`
+### Summary B: `openai/gpt-5.2-codex`
 
 <ul>
-    <li><b>Significant Merger Deal:</b> Trump Media is merging with TAE Technologies in a $6 billion deal, marking a major entry into mainstream finance and the U.S. economy.</li>
-    <li><b>Fusion Technology Focus:</b> The merger is a substantial investment in TAE's commercially unproven nuclear fusion technology, which has support from the U.S. government and prominent corporations like Alphabet and Chevron.</li>
-    <li><b>Strategic Expansion:</b> This venture aligns with the broader Trump family's recent diversification into areas such as venture capital, investment banking, manufacturing SPACs, and Bitcoin mining data centers.</li>
-    <li><b>Financial Performance:</b> Despite recent operating losses and a stock price decline, Trump Media saw a significant surge in its stock value following the merger announcement.</li>
-    <li><b>Governmental Oversight Concerns:</b> A U.S. Congressman has raised concerns about potential conflicts of interest, emphasizing the need for oversight to ensure public funds benefit the American people rather than specific corporate interests.</li>
+<li><b>Service suspension:</b> Google sent a cease-and-desist to Kantar, leading Barb and Kantar to pause the UK TV-set YouTube channel measurement service.</li>
+<li><b>Reason cited:</b> Google said the audio-matching approach used its creator APIs in ways that breached terms of service.</li>
+<li><b>Purpose of service:</b> The initiative aimed to compare YouTube channels with linear TV and streamers using consistent measurement methods.</li>
+<li><b>Initial findings:</b> Early results showed relatively modest weekly TV-set audiences for top YouTube channels such as Peppa Pig and MrBeast.</li>
+<li><b>Broader context:</b> The dispute occurs amid rising scrutiny of platform measurement and growing regulator interest in media rules.</li>
 </ul>
 
-### Summary C: `openai/gpt-5.2-codex`
+### Summary C: `openai/gpt-5.1-codex-mini`
 
 <ul>
-<li><b>Merger scale</b>: Trump Media agreed to merge with TAE Technologies in a deal valuing the fusion company at about $6 billion, the family’s largest mainstream finance move since Trump returned to office.</li>
-<li><b>Fusion focus</b>: The combined company will target commercial nuclear fusion, aiming for first power in 2031, with TAE citing decades of research and reduced size, cost, and complexity.</li>
-<li><b>Leadership and ownership</b>: Devin Nunes will co-lead the merged company with TAE’s CEO, Donald Trump Jr. will join the board, and the Trump family holds a near-majority stake in Trump Media.</li>
-<li><b>Market reaction and backing</b>: Trump Media shares jumped over 40% on the announcement despite large prior losses, while TAE backers include Alphabet, Chevron, Goldman Sachs, and prominent family offices.</li>
-<li><b>Policy and scrutiny</b>: Federal programs are boosting fusion development, but lawmakers flagged potential conflicts of interest and called for oversight of public funding.</li>
+<li><b>Service suspension:</b> Google issued a cease-and-desist to Kantar, pausing the Barb-Kantar YouTube measurement service.</li>
+<li><b>Purpose of initiative:</b> Barb and Kantar had aimed to compare YouTube channel viewership with traditional TV and streaming metrics via shared methodology.</li>
+<li><b>Dispute focus:</b> Google contended the service breached creator content terms of service, especially around API usage for attributing viewing sessions.</li>
+<li><b>Initial findings:</b> Early data showed Peppa Pig and MrBeast among top YouTube channels on TVs, each with under 2% of the available audience.</li>
+<li><b>Measurement context:</b> Barb uses panel meters and Kantar’s audio-matching tech tied to Google APIs, while UK YouTube viewing also tracked by Ipsos/Iris and other advertisers’ tools.</li>
 </ul>
 
-### Summary D: `anthropic/claude-haiku-4.5`
+### Summary D: `google/gemini-2.5-flash-lite`
 
 <ul>
-<li><b>Trump Media Merger:</b> Trump Media agreed to merge with TAE Technologies in a $6 billion deal, creating the U.S.'s first publicly traded nuclear fusion company, with Donald Trump Jr. joining TAE's board.</li>
-<li><b>Company Valuation:</b> Trump Media's stock surged over 40% following the announcement, though the company has reported hundreds of millions in operating losses in recent years and remains down 56% for the year.</li>
-<li><b>TAE Technologies Background:</b> TAE is a prominent commercial nuclear fusion company with two decades of research, a board including former U.S. Energy Secretary Ernest Moniz, and backing from major corporations including Alphabet, Chevron, and Goldman Sachs.</li>
-<li><b>Government Support:</b> The merger aligns with Trump administration programs boosting nuclear fusion technology to meet growing energy demands, including an October Department of Energy national strategy to accelerate fusion development.</li>
-<li><b>Timeline and Goals:</b> TAE's leadership stated the company has a "mature team" and plans to achieve first power by 2031, with executives describing the merger as providing necessary capital for the multibillion-dollar undertaking.</li>
+    <li><b>Service Suspension:</b> A new service by Barb and Kantar, designed to compare YouTube viewership with traditional TV and streaming services, has been suspended.</li>
+    <li><b>Google's Legal Action:</b> Google, via YouTube, sent a cease and desist letter to Kantar, citing a breach of terms of service for accessing data related to creator content.</li>
+    <li><b>Measurement Methodology:</b> The suspended service used audio-matching to identify YouTube content viewed on TV sets, comparing it with data from linear TV and streamers on the same methodology.</li>
+    <li><b>Viewership Data:</b> While details on specific channel viewership were provided, the service indicated that even top YouTube channels had relatively small audiences when measured on TV sets compared to the total potential audience.</li>
+    <li><b>Industry Context:</b> The dispute occurs amidst rising tensions between traditional TV and tech platforms, and increased scrutiny from regulators like Ofcom on internet and social media platforms.</li>
 </ul>
 
-### Summary E: `google/gemini-3-flash-preview`
+### Summary E: `anthropic/claude-haiku-4.5`
 
 <ul>
-    <li><b>Strategic Merger:</b> Trump Media has entered a $6 billion agreement to merge with TAE Technologies, creating the first publicly traded nuclear fusion entity.</li>
-    <li><b>Energy Expansion:</b> The venture seeks to capitalize on surging AI electricity demands by developing commercial fusion power, with a target production date of 2031.</li>
-    <li><b>Corporate Backing:</b> Despite previous market hesitation, the deal involves major institutional partners including Alphabet, Goldman Sachs, and Chevron.</li>
-    <li><b>Political Synergy:</b> The federal government is actively supporting the sector through Department of Energy reorganizations and new programs aimed at national energy dominance.</li>
-    <li><b>Market Reaction:</b> Following the announcement, Trump Media’s stock price increased by over 40%, reflecting significant investor interest in the family’s diversifying business portfolio.</li>
+<li><b>Measurement Service Suspended:</b> Google forced UK TV measurement groups Barb and Kantar to halt a service comparing YouTube channel viewership with traditional TV and streaming platforms using identical methodology.</li>
+<li><b>Legal Cease and Desist:</b> YouTube sent a legal letter citing breach of terms of service, specifically regarding use of creator content data and APIs for audio-matching content recognition.</li>
+<li><b>Limited YouTube TV Viewership:</b> The service showed Peppa Pig as YouTube's top channel on TV sets with 758,000 viewers (1.2% of audience aged 4+) and MrBeast with 319,000 viewers (0.5%) during measured weeks.</li>
+<li><b>Industry Context:</b> The dispute reflects growing tension between traditional TV industry and tech platforms attracting younger audiences, with UK regulators like Ofcom reassessing regulatory frameworks.</li>
+<li><b>Broader Measurement Landscape:</b> YouTube viewership in the UK is tracked through multiple services including Barb (TV-based panels), Ipsos/Iris, Nielsen, and AudienceProject for different metrics.</li>
 </ul>
 
 ## Judge Evaluation
 
-The prompt asks for a summary from the perspective of an "objective commenter" who needs to compensate for a biased ("communist loonie") author, using the text as the source of truth. The summary must be 5 bullet points in HTML format.
+Based on the analysis of the summaries against the constraints and source text:
 
-**Analysis of constraints and options:**
-*   **Adherence to "Compensate for bias":** The source text contains editorializing (e.g., "company in search of a business," "shunned," "riskiest corners"). It also ends with a political criticism from a Democrat representative regarding conflicts of interest. Compensating for bias implies stripping away the emotive language and potentially filtering out the political attacks to focus on the business facts.
-    *   **Summary C** includes the conflict of interest criticism ("lawmakers flagged potential conflicts").
-    *   **Summary D** omits the criticism, focusing instead on the government support/strategy ("aligns with Trump administration programs"). By reframing the government interaction as strategic alignment rather than corrupt conflict, and ignoring the partisan quote at the end, D adheres best to the instruction to compensate for a hostile author while remaining factually grounded in the text's description of the DOE strategy.
+**Summary A** is the strongest.
+*   **Accuracy & Completeness:** It captures all major aspects of the text: the suspension, the legal reasoning regarding API/ToS, the specific data findings (low viewership metrics), the counter-argument from Google regarding the data's representativeness, and the regulatory context.
+*   **Compensation for Author Bias:** The prompt warns of a biased author ("communist loonie") and the source text uses charged language ("Google has forced..."). Summary A neutralizes this well by reporting the action as a specific legal step ("issued a cease and desist") and, crucially, including Google's defense that the data was not representative (Point 4), which provides a balanced view of why the service was stopped beyond just corporate power-play.
+*   **Structure:** It uses the 5 bullet points effectively to create a narrative arc: Incident -> Legal Cause -> The Data in Question -> The Substantive Disagreement -> Broader Context.
+*   **Format:** Adheres strictly to the HTML and bolding requirements.
 
-*   **Content & Precision:**
-    *   **Summary C** provides a good overview but is slightly vague on the financial reality ("despite large prior losses") compared to D. It misses the mention of Ernest Moniz, a key credibility marker in the text.
-    *   **Summary D** is highly precise. It captures the specific financial picture ("surged over 40%," "hundreds of millions in operating losses," "down 56% for the year"). It mentions Ernest Moniz (former Energy Secretary) and the specific corporate backers (Alphabet, Chevron, Goldman), which objectively validates the "unproven" technology countered by the author's skepticism.
+Summary B is concise but misses the nuance of the methodological dispute.
+Summary C is strong and includes context on other measurement tools, but misses Google's specific argument about the suspended service's lack of representativeness.
+Summary D is accurate but slightly generic in its description of the data.
+Summary E retains the charged language ("forced") from the source text, failing the instruction to compensate for the tone/bias.
 
-*   **Format:**
-    *   Both C and D follow the HTML format well.
-    *   **Summary A** is good but lacks the specific names of the backers (referring only to "major corporate backers"), which is a significant omission given the text's emphasis on them.
-    *   **Summary B** has messy indentation and is less detailed.
-    *   **Summary E** is too vague.
-
-**Conclusion:**
-Summary D represents the best balance of objectivity and detail. It strips away the author's snark and political jabs (compensating for the "loonie" bias) and focuses on the hard business facts: the valuation, the exact stock performance (both positive and negative), the credible involvement of Ernest Moniz and major banks, and the strategic timeline.
-
-WINNER: D
+WINNER: A
 
 ## Timing
 
 | Model | Time |
 |-------|------|
-| anthropic/claude-haiku-4.5 | 4.6s |
-| google/gemini-2.5-flash-lite | 1.7s |
-| google/gemini-3-flash-preview | 11.1s |
-| openai/gpt-5.1-codex-mini | 4.8s |
-| openai/gpt-5.2-codex | 5.7s |
-| **Total (wall clock)** | **103s** |
+| anthropic/claude-haiku-4.5 | 3.3s |
+| google/gemini-2.5-flash-lite | 1.8s |
+| google/gemini-3-flash-preview | 3.1s |
+| openai/gpt-5.1-codex-mini | 3.3s |
+| openai/gpt-5.2-codex | 4.7s |
+| **Total (wall clock)** | **137s** |
